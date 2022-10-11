@@ -83,17 +83,14 @@ const ButtonLeft = styled.button`
   border: 1px solid #303f9f;
   border-radius: 8px 8px 8px 0px;
   background: #fff;
-  & > a {
-    display: block;
-    cursor: pointer;
-    padding: 6px 16px;
-
-    font-size: 16px;
-    text-transform: uppercase;
-    color: #303f9f;
-    letter-spacing: -0.04px;
-    text-decoration: none;
-  }
+  padding: 6px 16px;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #303f9f;
+  letter-spacing: -0.04px;
+  ${(props: { disable?: boolean }) => ({
+    cursor: props.disable ? 'not-allowed' : 'pointer'
+  })}
 `;
 const ButtonRight = styled.button`
   outline: none;
@@ -118,7 +115,7 @@ const schema = yup
   })
   .required();
 const ForgotPassword = (props: Props) => {
-  const [isSubmit, setIsSubmit] = useState(false);
+  const [isSubmiting, setIsSubmiting] = useState(false);
   const navigate = useNavigate();
   const {
     register,
@@ -128,17 +125,22 @@ const ForgotPassword = (props: Props) => {
     resolver: yupResolver(schema)
   });
   const onSubmit = (data: IFormData) => {
-    if (!isSubmit) {
-      setIsSubmit(true);
+    if (!isSubmiting) {
+      setIsSubmiting(true);
+    }
+  };
+  const handleComback = () => {
+    if (!isSubmiting) {
+      navigate('/Login');
     }
   };
   useEffect(() => {
-    if (isSubmit) {
+    if (isSubmiting) {
       setTimeout(() => {
         navigate('/Login');
       }, 2000);
     }
-  }, [isSubmit]);
+  }, [isSubmiting]);
   return (
     <Wrapper columns={2}>
       <SideLeft src={background}></SideLeft>
@@ -170,10 +172,10 @@ const ForgotPassword = (props: Props) => {
               />
             </InputComponent>
             <DialogActions>
-              <ButtonLeft>
-                <Link to="/Login">QUAY LẠI</Link>
+              <ButtonLeft disable={isSubmiting} onClick={handleComback}>
+                QUAY LẠI
               </ButtonLeft>
-              <ButtonRight disable={isSubmit || !isValid} type="submit">
+              <ButtonRight disable={isSubmiting || !isValid} type="submit">
                 Gửi
               </ButtonRight>
             </DialogActions>
