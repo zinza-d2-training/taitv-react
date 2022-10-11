@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -6,7 +6,7 @@ import background from '../../access/images/side_left.png';
 import styled from '@emotion/styled';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 type Props = {};
 const Wrapper = styled.div((props: { columns?: number }) => ({
@@ -98,7 +98,6 @@ const ButtonLeft = styled.button`
 const ButtonRight = styled.button`
   outline: none;
   border: 1px solid #303f9f;
-  cursor: pointer;
   padding: 6px 32px;
   background-color: #303f9f;
   border-radius: 8px 8px 8px 0px;
@@ -106,6 +105,9 @@ const ButtonRight = styled.button`
   text-transform: uppercase;
   color: #fff;
   letter-spacing: -0.04px;
+  ${(props: { disable?: boolean }) => ({
+    cursor: props.disable ? 'not-allowed' : 'pointer'
+  })}
 `;
 interface IFormData {
   email: string;
@@ -116,6 +118,8 @@ const schema = yup
   })
   .required();
 const ForgotPassword = (props: Props) => {
+  const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -124,8 +128,17 @@ const ForgotPassword = (props: Props) => {
     resolver: yupResolver(schema)
   });
   const onSubmit = (data: IFormData) => {
-    console.log(data);
+    if (!isSubmit) {
+      setIsSubmit(true);
+    }
   };
+  useEffect(() => {
+    if (isSubmit) {
+      setTimeout(() => {
+        navigate('/Login');
+      }, 2000);
+    }
+  }, [isSubmit]);
   return (
     <Wrapper columns={2}>
       <SideLeft src={background}></SideLeft>
@@ -160,7 +173,9 @@ const ForgotPassword = (props: Props) => {
               <ButtonLeft>
                 <Link to="/Login">QUAY LẠI</Link>
               </ButtonLeft>
-              <ButtonRight type="submit">Gửi</ButtonRight>
+              <ButtonRight disable={isSubmit || !isValid} type="submit">
+                Gửi
+              </ButtonRight>
             </DialogActions>
           </Form>
         </Container>
