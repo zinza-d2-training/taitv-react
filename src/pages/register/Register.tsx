@@ -14,6 +14,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 type Props = {};
 const Wrapper = styled.div((props: { columns?: number }) => ({
   display: 'grid',
@@ -103,7 +107,48 @@ const DialogAction = styled.div`
     color: #3f51b5;
   }
 `;
+interface IFormData {
+  identityCardNumber: string;
+  email: string;
+  password: string;
+  name: string;
+  birthday: string;
+  sex: string;
+}
+const schema = yup
+  .object({
+    identityCardNumber: yup
+      .string()
+      .required()
+      .matches(/(\d{9}|\d{12})/, { message: 'Số cmnd gồm 9 hoặc 12 số!' }),
+    email: yup.string().email().required(),
+    password: yup.string().min(8).trim(),
+    name: yup.string().required(),
+    birthday: yup.string().required(),
+    sex: yup
+      .string()
+      .required()
+      .matches(/(nam|nữ)/, { message: 'Giới tính là nam hoặc nữ' })
+  })
+  .required();
 const Register = (props: Props) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid }
+  } = useForm<IFormData>({
+    resolver: yupResolver(schema)
+  });
+  const onSubmit = (data: IFormData) => {
+    console.log(data);
+  };
+  const [value, setValue] = useState<Dayjs | null>(
+    dayjs('2014-08-18T21:11:54')
+  );
+
+  const handleChange = (newValue: Dayjs | null) => {
+    setValue(newValue);
+  };
   return (
     <Wrapper columns={2}>
       <SideLeft src={background}></SideLeft>
@@ -115,75 +160,91 @@ const Register = (props: Props) => {
             </Typography>
           </Header>
 
-          <Grid>
+          <Grid onSubmit={handleSubmit(onSubmit)}>
             <InputComponent>
-              <Label>
+              <Label htmlFor="identityCardNumber">
                 Số CMND/CCCD <span>(*)</span>
               </Label>
               <TextField
-                error={true}
+                {...register('identityCardNumber')}
+                id="identityCardNumber"
+                error={errors?.identityCardNumber ? true : false}
                 defaultValue=""
-                helperText="Số CMND/CCCD không được bỏ trống"
+                helperText={
+                  errors?.identityCardNumber
+                    ? errors?.identityCardNumber.message
+                    : ''
+                }
                 placeholder="Số CMND/CCCD"
               />
             </InputComponent>
             <InputComponent>
-              <Label>
+              <Label htmlFor="email">
                 Email <span>(*)</span>
               </Label>
               <TextField
-                error={false}
+                id="email"
+                {...register('email')}
+                error={errors?.email ? true : false}
                 type="email"
                 defaultValue=""
-                helperText=""
+                helperText={errors?.email ? errors.email.message : ''}
                 placeholder="Email"
               />
             </InputComponent>
             <InputComponent>
-              <Label>
+              <Label htmlFor="password">
                 Mật khẩu <span>(*)</span>
               </Label>
               <TextField
-                error={false}
+                id="password"
+                {...register('password')}
+                error={errors?.password ? true : false}
                 type="password"
                 defaultValue=""
-                helperText=""
+                helperText={errors?.password ? errors.password.message : ''}
                 placeholder="*****************"
               />
             </InputComponent>
             <InputComponent>
-              <Label>
+              <Label htmlFor="name">
                 Họ và tên <span>(*)</span>
               </Label>
               <TextField
-                error={false}
+                {...register('name')}
+                id="name"
+                error={errors?.name ? true : false}
                 type="text"
                 defaultValue=""
-                helperText=""
+                helperText={errors?.name ? errors.name.message : ''}
                 placeholder="Họ và tên"
               />
             </InputComponent>
             <InputComponent>
-              <Label>
+              <Label htmlFor="birthday">
                 Ngày sinh <span>(*)</span>
               </Label>
-              <TextField
-                error={false}
-                type="date"
-                defaultValue=""
-                helperText=""
-                placeholder="Ngày/Tháng/Năm"
-              />
+              <LocalizationProvider id="birthday" dateAdapter={AdapterDayjs}>
+                <MobileDatePicker
+                  {...register('birthday')}
+                  inputFormat="MM/DD/YYYY"
+                  value={value}
+                  onChange={handleChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
             </InputComponent>
             <InputComponent>
-              <Label>
+              <Label htmlFor="sex">
                 Giới tính <span>(*)</span>
               </Label>
               <TextField
-                error={false}
+                id="sex"
+                {...register('sex')}
+                error={errors?.sex ? true : false}
                 type="text"
                 defaultValue=""
-                helperText=""
+                helperText={errors?.sex ? errors.sex.message : ''}
                 placeholder="Giới tính"
               />
             </InputComponent>
@@ -236,7 +297,9 @@ const Register = (props: Props) => {
               </FormControl>
             </InputComponent>
             <DialogAction>
-              <Button endIcon={<ArrowForwardIcon />}>tiếp tục</Button>
+              <Button endIcon={<ArrowForwardIcon />} type="submit">
+                tiếp tục
+              </Button>
             </DialogAction>
           </Grid>
         </Container>
