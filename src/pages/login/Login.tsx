@@ -30,7 +30,6 @@ const Container = styled.div`
   align-items: flex-start;
   padding: 0px;
   gap: 24px;
-
   width: 376px;
   height: 480px;
 
@@ -41,13 +40,27 @@ const Container = styled.div`
 const Header = styled.div`
   height: 42px;
   width: 100%;
+  & .MuiTypography-h4 {
+    width: 376px;
+    height: 42px;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 123.5%;
+    color: rgba(0, 0, 0, 0.87);
+    letter-spacing: 0px;
+  }
 `;
-const Form = styled.form`
+const Form = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding: 0px;
   gap: 16px;
-  width: 100%;
+
+  width: 376px;
+  height: 174px;
 `;
 const InputComponent = styled.div`
   width: 100%;
@@ -56,10 +69,9 @@ const InputComponent = styled.div`
   align-items: flex-start;
   padding: 0px;
   gap: 5px;
-  height: 79px;
   & .MuiInputBase-input {
     padding: 13.5px 16px;
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(0, 0, 0, 0.87);
     font-size: 16px;
     line-height: 23px;
     border: 1px solid #e8e8e8;
@@ -67,9 +79,11 @@ const InputComponent = styled.div`
   }
   & .MuiFormHelperText-root {
     margin: 0px;
-    font-size: 16px;
+    font-size: 12px;
     position: relative;
-    top: -3px;
+    color: #d32f2f;
+    top: 0;
+    line-height: 20px;
   }
 `;
 const Lable = styled.label`
@@ -83,9 +97,12 @@ const Links = styled.div`
   width: 100%;
   & > a {
     display: block;
-    text-align: right;
-    color: #3949ab;
+    height: 20px;
     font-size: 14px;
+    line-height: 143%;
+    text-align: right;
+    letter-spacing: -0.04px;
+    color: #3949ab;
     text-decoration: none;
   }
 `;
@@ -102,12 +119,10 @@ const LoginButton = styled.button`
   ${(props: { disable: boolean }) =>
     !!props.disable
       ? {
-          cursor: 'not-allowed',
-          opacity: '0.6'
+          cursor: 'not-allowed'
         }
       : {
-          cursor: 'pointer',
-          opacity: '1'
+          cursor: 'pointer'
         }};
   color: #fff;
   position: relative;
@@ -123,7 +138,7 @@ const LoginButton = styled.button`
 `;
 const RegisterButton = styled.button`
   width: 100%;
-  border: 1px solid #66bb6a;
+  border: 1px solid #9ccc65;
   outline: none;
   background: transparent;
   border-radius: 5px;
@@ -132,10 +147,11 @@ const RegisterButton = styled.button`
     padding: 16px;
     font-weight: 700;
     font-size: 16px;
-    line-height: 19px;
+    line-height: 150%;
     cursor: pointer;
-    color: #66bb6a;
     text-decoration: none;
+    letter-spacing: -0.04px;
+    color: #9ccc65;
   }
 `;
 interface IFormData {
@@ -163,42 +179,44 @@ const Login = (props: Props) => {
   };
 
   return (
-    <Wrapper columns={2}>
-      <SideLeft src={background}></SideLeft>
-      <SideRight>
-        <Container>
-          <Header>
-            <Typography variant="h4" align="center" sx={{ fontWeight: 'bold' }}>
-              Đăng nhập vào tài khoản
-            </Typography>
-          </Header>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <InputComponent>
-              <Lable htmlFor="email">Email</Lable>
-              <TextField
-                error={errors?.email ? true : false}
-                {...register('email')}
-                id="email"
-                label=""
-                type="text"
-                helperText={errors?.email ? errors.email.message : ''}
-                placeholder="Email"
-                sx={{ width: '100%' }}
-              />
-            </InputComponent>
-            <InputComponent>
-              <Lable htmlFor="password">Password</Lable>
-              <TextField
-                {...register('password')}
-                error={errors?.password ? true : false}
-                id="password"
-                label=""
-                type="password"
-                helperText={errors?.password ? errors.password.message : ''}
-                placeholder="****************"
-                sx={{ width: '100%' }}
-              />
-            </InputComponent>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Wrapper columns={2}>
+        <SideLeft src={background}></SideLeft>
+        <SideRight>
+          <Container>
+            <Header>
+              <Typography variant="h4" component="h4">
+                Đăng nhập vào tài khoản
+              </Typography>
+            </Header>
+            <Form>
+              <InputComponent>
+                <Lable htmlFor="email">Email</Lable>
+                <TextField
+                  error={errors?.email ? true : false}
+                  {...register('email')}
+                  id="email"
+                  label=""
+                  type="text"
+                  helperText={errors?.email ? errors.email.message : ''}
+                  placeholder="Email"
+                  sx={{ width: '100%' }}
+                />
+              </InputComponent>
+              <InputComponent>
+                <Lable htmlFor="password">Password</Lable>
+                <TextField
+                  {...register('password')}
+                  error={errors?.password ? true : false}
+                  id="password"
+                  label=""
+                  type="password"
+                  helperText={errors?.password ? errors.password.message : ''}
+                  placeholder="****************"
+                  sx={{ width: '100%' }}
+                />
+              </InputComponent>
+            </Form>
             <Links>
               <Link to="/ForgotPassword">Quên mật khẩu?</Link>
             </Links>
@@ -219,10 +237,10 @@ const Login = (props: Props) => {
             <RegisterButton>
               <Link to="/register">Đăng ký</Link>
             </RegisterButton>
-          </Form>
-        </Container>
-      </SideRight>
-    </Wrapper>
+          </Container>
+        </SideRight>
+      </Wrapper>
+    </form>
   );
 };
 export { Login };
