@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import { Link } from 'react-router-dom';
 
 type Props = {};
+
 const Wrapper = styled.div((props: { columns?: number }) => ({
   display: 'grid',
   gridTemplateColumns: `repeat(${props?.columns ? props.columns : 2}, 1fr)`,
@@ -32,7 +33,6 @@ const Container = styled.div`
   gap: 24px;
   width: 376px;
   height: 480px;
-
   flex: none;
   order: 0;
   flex-grow: 0;
@@ -58,9 +58,7 @@ const Form = styled.div`
   align-items: flex-start;
   padding: 0px;
   gap: 16px;
-
   width: 376px;
-  height: 174px;
 `;
 const InputComponent = styled.div`
   width: 100%;
@@ -160,12 +158,20 @@ interface IFormData {
 }
 const schema = yup
   .object({
-    email: yup.string().required().email(),
-    password: yup.string().min(8).required().trim()
+    email: yup
+      .string()
+      .required('Họ tên không được bỏ trống')
+      .email('Phải đúng định dạng email'),
+    password: yup
+      .string()
+      .min(8, 'Mật khẩu tối thiểu 8 ký tự')
+      .required()
+      .trim()
   })
   .required();
 const Login = (props: Props) => {
   const [serverErr, setServerErr] = useState('');
+
   const {
     register,
     handleSubmit,
@@ -173,6 +179,7 @@ const Login = (props: Props) => {
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
   });
+
   const onSubmit = (data: IFormData) => {
     console.log(data);
     setServerErr('co loi');
@@ -243,4 +250,5 @@ const Login = (props: Props) => {
     </form>
   );
 };
+
 export { Login };
