@@ -1,3 +1,3 @@
-import sideForm from "./imgs/sideForm.png"
+import sideForm from './imgs/sideForm.png';
 
-export { sideForm }
+export { sideForm };

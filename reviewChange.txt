@@ -1,2 +1,7 @@
-Click submit thì fake request 2s, sau đó quay về trang login
-Disable button khi form invalid hoặc đang request
+-setup 2 devDependentcies: eslint-plugin-prettier, prettier
+-fix 2 button login, register trong page login 
+-fix messageErr khi click button login trong page login 
+-Implement Forgot password:
++Email required
++Click submit thì fake request 2s, sau đó quay về trang login
++Disable button khi form invalid hoặc đang request
