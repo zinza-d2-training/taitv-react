@@ -6,12 +6,13 @@ import background from '../../access/images/side_left.png';
 import styled from '@emotion/styled';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
+// import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
+// import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -135,7 +136,7 @@ const Register = (props: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
   });

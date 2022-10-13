@@ -106,7 +106,7 @@ const Links = styled.div`
 `;
 const LoginButton = styled.button`
   width: 100%;
-  padding: 16px;
+  padding: 15.5px;
   border: none;
   outline: none;
   background: #66bb6a;
@@ -125,9 +125,9 @@ const LoginButton = styled.button`
   color: #fff;
   position: relative;
   & > span {
-    color: red;
+    color: #d32f2f;
     position: absolute;
-    font-size: 16px;
+    font-size: 12px;
     bottom: 0;
     left: 0;
     font-weight: 400;
@@ -142,7 +142,7 @@ const RegisterButton = styled.button`
   border-radius: 5px;
   & > a {
     display: block;
-    padding: 16px;
+    padding: 13px;
     font-weight: 700;
     font-size: 16px;
     line-height: 150%;
@@ -182,9 +182,14 @@ const Login = (props: Props) => {
 
   const onSubmit = (data: IFormData) => {
     console.log(data);
-    setServerErr('co loi');
+    setServerErr('Thông tin tài khoản hoặc mật khẩu không chính xác');
   };
 
+  const clearErr = () => {
+    if (!isValid) {
+      setServerErr('');
+    }
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper columns={2}>
@@ -227,7 +232,7 @@ const Login = (props: Props) => {
             <Links>
               <Link to="/ForgotPassword">Quên mật khẩu?</Link>
             </Links>
-            <LoginButton disable={!isValid} type="submit">
+            <LoginButton disable={!isValid} type="submit" onClick={clearErr}>
               Đăng nhập <span>{serverErr}</span>
             </LoginButton>
             <Typography
