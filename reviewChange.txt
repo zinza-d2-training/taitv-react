@@ -1,2 +1,3 @@
-Click submit thì fake request 2s, sau đó quay về trang login
-Disable button khi form invalid hoặc đang request
+set up eslint-plugin-prettier và prettier.
+update errMessage khi click button submit.
+fix design button submit, button register.

@@ -6,7 +6,7 @@ import background from '../../access/images/side_left.png';
 import styled from '@emotion/styled';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {};
 const Wrapper = styled.div((props: { columns?: number }) => ({
