@@ -1,25 +1,18 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import background from '../../access/images/side_left.png';
 import styled from '@emotion/styled';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-// import { Link } from 'react-router-dom';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-// import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Select from '@mui/material/Select';
-// import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 type Props = {};
+
 const Wrapper = styled.div((props: { columns?: number }) => ({
   display: 'grid',
   gridTemplateColumns: `repeat(${props?.columns ? props.columns : 2}, 1fr)`,
@@ -33,7 +26,7 @@ const SideLeft = styled.img((props: { src: string; alt?: string }) => ({
 const SideRight = styled.div((props) => ({
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'flex-start'
+  alignItems: 'center'
 }));
 const Container = styled.div`
   display: flex;
@@ -41,26 +34,29 @@ const Container = styled.div`
   align-items: center;
   padding: 200px 24px 0px;
   gap: 16px;
-
   width: 600px;
   height: 100vh;
   overflow-y: auto;
-`;
-const Header = styled.div`
-  & .MuiTypography-root {
-    font-size: 34px;
-    font-weight: 700;
-    line-height: 123.5%;
-    color: rgba(0, 0, 0, 0.87);
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
-const Grid = styled.form`
+const Header = styled.div`
+  display: block;
+  width: 100%;
+  height: 42px;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.87);
+`;
+const Grid = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   padding: 16px 0px 0px;
-  gap: 36px;
+  gap: 16px;
   width: 400px;
 `;
 const InputComponent = styled.div`
@@ -69,43 +65,76 @@ const InputComponent = styled.div`
   align-items: flex-start;
   padding: 0px;
   gap: 5px;
-  width: 400px;
-  height: 79px;
-  & .MuiTextField-root {
-    width: 100%;
+  width: 100%;
+  background: #ffffff;
+  & label {
+    height: 24px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: rgba(0, 0, 0, 0.87);
+    span {
+      color: #d32f2f;
+    }
   }
-  & .MuiInputBase-root {
-    border-radius: 4px;
+  & .MuiInputBase-input,
+  & .input-birthday {
+    width: 100%;
+    padding: 12.5px 8px;
+    color: rgba(0, 0, 0, 0.87);
     font-size: 16px;
     line-height: 23px;
-    color: rgba(0, 0, 0, 0.6);
     border: 1px solid #c4c4c4;
+    border-radius: 4px;
   }
-  & .MuiFormHelperText-root {
+  & .MuiFormHelperText-root,
+  & .input-birthday-helper {
     margin: 0px;
-    font-weight: 400;
     font-size: 12px;
+    position: relative;
+    color: #d32f2f;
+    top: 3px;
     line-height: 20px;
-    color: #d32f2f;
   }
 `;
-const Label = styled.label`
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: rgba(0, 0, 0, 0.87);
-  & span {
-    color: #d32f2f;
-  }
-`;
-const DialogAction = styled.div`
-  width: 100%;
+const DialogActions = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: flex-end;
+  align-items: center;
+  padding: 18px 0px;
+  gap: 16px;
+  width: 400px;
+  height: 60px;
   & .MuiButtonBase-root {
-    text-transform: uppercase;
+    padding: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+    width: 87px;
+    height: 24px;
+    background: #ffffff;
+    box-shadow: unset;
+    font-weight: 500;
     font-size: 14px;
+    line-height: 24px;
+    letter-spacing: 0.46px;
+    text-transform: uppercase;
     color: #3f51b5;
+    &:hover {
+      background-color: #ffffff !important;
+      box-shadow: unset;
+    }
+  }
+  & .MuiButton-endIcon {
+    margin-right: 0;
+    margin-left: 0;
+    & .MuiSvgIcon-root {
+      width: 16px;
+    }
   }
 `;
 interface IFormData {
@@ -113,199 +142,163 @@ interface IFormData {
   email: string;
   password: string;
   name: string;
-  birthday: string;
-  sex: string;
+  birthday: Date;
 }
+// identityCardNumber,email,password,name,birthday
 const schema = yup
   .object({
     identityCardNumber: yup
       .string()
-      .required()
-      .matches(/(\d{9}|\d{12})/, { message: 'Số cmnd gồm 9 hoặc 12 số!' }),
-    email: yup.string().email().required(),
-    password: yup.string().min(8).trim(),
-    name: yup.string().required(),
-    birthday: yup.string().required(),
-    sex: yup
+      .required('Chứng minh nhân dân là bắt buộc')
+      .matches(/^[0-9]+$/, 'Chứng minh nhân dân là số')
+      .matches(/^(\d{9}|\d{12})$/, 'Chứng minh nhân dân gồm 9 hoặc 12 số'), ///^(\d{9}|\d{12})$/
+    email: yup
       .string()
-      .required()
-      .matches(/(nam|nữ)/, { message: 'Giới tính là nam hoặc nữ' })
+      .required('Email không được bỏ trống')
+      .email('Phải đúng định dạng email'),
+    password: yup
+      .string()
+      .required('Mật khẩu là bắt buộc')
+      .min(8, 'Mật khẩu chứa tối thiểu 8 ký tự')
+      .trim(),
+    name: yup.string().required('Tên là bắt buộc').trim(),
+    birthday: yup.date().required('Ngày sinh là bắt buộc')
   })
   .required();
 const Register = (props: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    control,
+    formState: { errors, isValid }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
   });
   const onSubmit = (data: IFormData) => {
     console.log(data);
   };
-  const [value, setValue] = useState<Dayjs | null>(
-    dayjs('2014-08-18T21:11:54')
-  );
+  console.log(errors);
 
-  const handleChange = (newValue: Dayjs | null) => {
-    setValue(newValue);
-  };
   return (
-    <Wrapper columns={2}>
-      <SideLeft src={background}></SideLeft>
-      <SideRight>
-        <Container>
-          <Header>
-            <Typography component="h4" align="center">
-              Đăng ký tài khoản
-            </Typography>
-          </Header>
-
-          <Grid onSubmit={handleSubmit(onSubmit)}>
-            <InputComponent>
-              <Label htmlFor="identityCardNumber">
-                Số CMND/CCCD <span>(*)</span>
-              </Label>
-              <TextField
-                {...register('identityCardNumber')}
-                id="identityCardNumber"
-                error={errors?.identityCardNumber ? true : false}
-                defaultValue=""
-                helperText={
-                  errors?.identityCardNumber
-                    ? errors?.identityCardNumber.message
-                    : ''
-                }
-                placeholder="Số CMND/CCCD"
-              />
-            </InputComponent>
-            <InputComponent>
-              <Label htmlFor="email">
-                Email <span>(*)</span>
-              </Label>
-              <TextField
-                id="email"
-                {...register('email')}
-                error={errors?.email ? true : false}
-                type="email"
-                defaultValue=""
-                helperText={errors?.email ? errors.email.message : ''}
-                placeholder="Email"
-              />
-            </InputComponent>
-            <InputComponent>
-              <Label htmlFor="password">
-                Mật khẩu <span>(*)</span>
-              </Label>
-              <TextField
-                id="password"
-                {...register('password')}
-                error={errors?.password ? true : false}
-                type="password"
-                defaultValue=""
-                helperText={errors?.password ? errors.password.message : ''}
-                placeholder="*****************"
-              />
-            </InputComponent>
-            <InputComponent>
-              <Label htmlFor="name">
-                Họ và tên <span>(*)</span>
-              </Label>
-              <TextField
-                {...register('name')}
-                id="name"
-                error={errors?.name ? true : false}
-                type="text"
-                defaultValue=""
-                helperText={errors?.name ? errors.name.message : ''}
-                placeholder="Họ và tên"
-              />
-            </InputComponent>
-            <InputComponent>
-              <Label htmlFor="birthday">
-                Ngày sinh <span>(*)</span>
-              </Label>
-              <LocalizationProvider id="birthday" dateAdapter={AdapterDayjs}>
-                <MobileDatePicker
-                  {...register('birthday')}
-                  inputFormat="MM/DD/YYYY"
-                  value={value}
-                  onChange={handleChange}
-                  renderInput={(params) => <TextField {...params} />}
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Wrapper columns={2}>
+        <SideLeft src={background}></SideLeft>
+        <SideRight>
+          <Container>
+            <Header>Đăng ký tài khoản</Header>
+            <Grid>
+              {/* input for identityCardNumber */}
+              <InputComponent>
+                <label htmlFor="identityCardNumber">
+                  Số CMND/CCCD <span>(*)</span>
+                </label>
+                <TextField
+                  {...register('identityCardNumber')}
+                  error={errors?.identityCardNumber ? true : false}
+                  id="identityCardNumber"
+                  label=""
+                  type="text"
+                  helperText={
+                    errors?.identityCardNumber
+                      ? errors.identityCardNumber.message
+                      : ''
+                  }
+                  placeholder="Số CMND/CCCD"
+                  sx={{ width: '100%' }}
                 />
-              </LocalizationProvider>
-            </InputComponent>
-            <InputComponent>
-              <Label htmlFor="sex">
-                Giới tính <span>(*)</span>
-              </Label>
-              <TextField
-                id="sex"
-                {...register('sex')}
-                error={errors?.sex ? true : false}
-                type="text"
-                defaultValue=""
-                helperText={errors?.sex ? errors.sex.message : ''}
-                placeholder="Giới tính"
-              />
-            </InputComponent>
-            <InputComponent>
-              <Label>
-                Tỉnh/Thành phố <span>(*)</span>
-              </Label>
-              <FormControl fullWidth>
-                <Select displayEmpty>
-                  <MenuItem value="">
-                    <em>Tỉnh/Thành phố</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <FormHelperText>Without label</FormHelperText>
-              </FormControl>
-            </InputComponent>
-            <InputComponent>
-              <Label>
-                Quận/Huyện <span>(*)</span>
-              </Label>
-              <FormControl fullWidth>
-                <Select displayEmpty>
-                  <MenuItem value="">
-                    <em>Quận/Huyện</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <FormHelperText>Without label</FormHelperText>
-              </FormControl>
-            </InputComponent>
-            <InputComponent>
-              <Label>
-                Xã/Phường <span>(*)</span>
-              </Label>
-              <FormControl fullWidth>
-                <Select displayEmpty>
-                  <MenuItem value="">
-                    <em>Xã/Phường</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <FormHelperText>Without label</FormHelperText>
-              </FormControl>
-            </InputComponent>
-            <DialogAction>
-              <Button endIcon={<ArrowForwardIcon />} type="submit">
-                tiếp tục
+              </InputComponent>
+
+              {/* input for email */}
+              <InputComponent>
+                <label htmlFor="email">
+                  Email <span>(*)</span>
+                </label>
+                <TextField
+                  {...register('email')}
+                  error={errors?.email ? true : false}
+                  id="email"
+                  label=""
+                  type="email"
+                  helperText={errors?.email ? errors.email.message : ''}
+                  placeholder="Email"
+                  sx={{ width: '100%' }}
+                />
+              </InputComponent>
+
+              {/* input for password */}
+              <InputComponent>
+                <label htmlFor="password">
+                  Mật khẩu <span>(*)</span>
+                </label>
+                <TextField
+                  {...register('password')}
+                  error={errors?.password ? true : false}
+                  id="password"
+                  label=""
+                  type="password"
+                  helperText={errors?.password ? errors.password.message : ''}
+                  placeholder="*****************"
+                  sx={{ width: '100%' }}
+                />
+              </InputComponent>
+
+              {/* input for name */}
+              <InputComponent>
+                <label htmlFor="name">
+                  Họ và tên <span>(*)</span>
+                </label>
+                <TextField
+                  {...register('name')}
+                  error={errors?.name ? true : false}
+                  id="text"
+                  label=""
+                  type="text"
+                  helperText={errors?.name ? errors.name.message : ''}
+                  placeholder="Họ và tên"
+                  sx={{ width: '100%' }}
+                />
+              </InputComponent>
+
+              {/* input for birthday */}
+              <InputComponent>
+                <label htmlFor="birthday">
+                  Ngày sinh <span>(*)</span>
+                </label>
+                <Controller
+                  control={control}
+                  name="birthday"
+                  render={({ field: { value, ...fieldProps } }) => {
+                    return (
+                      <div style={{ width: '100%' }}>
+                        <DatePicker
+                          {...fieldProps}
+                          selected={value}
+                          className="input-birthday"
+                          placeholderText="Ngày/Tháng/Năm"
+                          dateFormat="yyyy/MM/dd"
+                        />
+                        <p className="input-birthday-helper">
+                          {errors?.birthday ? errors.birthday.message : ''}
+                        </p>
+                      </div>
+                    );
+                  }}
+                />
+              </InputComponent>
+            </Grid>
+            <DialogActions>
+              <Button
+                variant="contained"
+                type="submit"
+                endIcon={<ArrowForwardIcon />}>
+                Tiếp tục
               </Button>
-            </DialogAction>
-          </Grid>
-        </Container>
-      </SideRight>
-    </Wrapper>
+            </DialogActions>
+          </Container>
+        </SideRight>
+      </Wrapper>
+    </form>
   );
 };
+
 export { Register };
