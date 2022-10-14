@@ -1,0 +1,98 @@
+// import * as React from 'react';
+// import ReactDOM from 'react-dom';
+// import _ from 'lodash/fp';
+// import ButtonsResult from './ButtonsResult';
+// import { useForm, Controller } from 'react-hook-form';
+// import TextField from '@material-ui/core/TextField';
+// import Autocomplete from '@material-ui/lab/Autocomplete';
+// import type {
+//   Control,
+//   NestedValue,
+//   SubmitHandler,
+//   DefaultValues
+// } from 'react-hook-form';
+// import { ThemeProvider, createMuiTheme } from '@material-ui/core';
+
+// import './styles.css';
+// const theme = createMuiTheme({
+//   palette: {
+//     type: 'dark'
+//   }
+// });
+
+// interface ICountry {
+//   code: string;
+//   label: string;
+//   phone: string;
+// }
+// const countries = [
+//   { code: 'AD', label: 'Andorra', phone: '376' },
+//   { code: 'AE', label: 'United Arab Emirates', phone: '971' }
+// ];
+
+// type FormValues = {
+//   country: NestedValue<{ code: string; label: string; phone: string }>;
+// };
+
+// const defaultValues: DefaultValues<FormValues> = {
+//   country: { code: 'AF', label: 'Afghanistan', phone: '93' }
+// };
+
+// function App() {
+//   const {
+//     handleSubmit,
+//     reset,
+//     control,
+//     formState: { errors, isValid }
+//   } = useForm<FormValues>({
+//     defaultValues
+//   });
+
+//   const onSubmit: SubmitHandler<FormValues> = (data) => {
+//     console.log(data);
+//   };
+
+//   return (
+//     <ThemeProvider theme={theme}>
+//       <form onSubmit={handleSubmit(onSubmit)} className="form">
+//         <div className="container">
+//           <section>
+//             <label>MUI autocomplete</label>
+//             <Controller
+//               control={control}
+//               render={({ field }) => (
+//                 <Autocomplete
+//                   {...field}
+//                   options={countries}
+//                   getOptionLabel={(option) => option.label}
+//                   renderOption={(option) => (
+//                     <span>
+//                       {option.code}
+//                       {option.label}
+//                     </span>
+//                   )}
+//                   getOptionSelected={(option: ICountry, value: ICountry) =>
+//                     _.isEqual(option, value)
+//                   }
+//                   renderInput={(params) => (
+//                     <TextField
+//                       {...params}
+//                       placeholder="Choose a country"
+//                       variant="outlined"
+//                     />
+//                   )}
+//                   onChange={(_, data) => field.onChange(data)}
+//                 />
+//               )}
+//               name="country"
+//             />
+//           </section>
+//         </div>
+//         <ButtonsResult {...{ reset }} />
+//       </form>
+//     </ThemeProvider>
+//   );
+// }
+
+// const rootElement = document.getElementById('root');
+// ReactDOM.render(<App />, rootElement);

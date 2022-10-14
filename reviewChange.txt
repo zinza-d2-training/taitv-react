@@ -1,2 +1,2 @@
 -add "react-datepicker" in dependencies,  "@types/react-datepicker" in devDependencies
--Implement pages/Register. including fileds: identityCardNumber, email ,password ,name, birthday
+-Implement pages/Register

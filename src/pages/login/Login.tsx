@@ -4,8 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import background from '../../access/images/side_left.png';
 import styled from '@emotion/styled';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
+import { Typography, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 type Props = {};
