@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import background from '../../access/images/side_left.png';
+import { ImgSideForm } from '../../access/index';
 import styled from '@emotion/styled';
 import { Typography, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -192,7 +192,7 @@ const Login = (props: Props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper columns={2}>
-        <SideLeft src={background}></SideLeft>
+        <SideLeft src={ImgSideForm}></SideLeft>
         <SideRight>
           <Container>
             <Header>
