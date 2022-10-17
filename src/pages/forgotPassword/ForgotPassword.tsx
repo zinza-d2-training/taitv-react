@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import background from '../../access/images/side_left.png';
+import { ImgSideForm } from '../../access/index';
 import styled from '@emotion/styled';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
+import { Typography, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {};
@@ -172,7 +171,7 @@ const ForgotPassword = (props: Props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper columns={2}>
-        <SideLeft src={background}></SideLeft>
+        <SideLeft src={ImgSideForm}></SideLeft>
         <SideRight>
           <Container>
             <Header>
