@@ -1,25 +1,10 @@
-import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import type {
-  Control,
-  NestedValue,
-  SubmitHandler,
-  DefaultValues
-} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { ImgSideForm } from '../../access/index';
 import styled from '@emotion/styled';
-import {
-  Typography,
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  FormControl
-} from '@mui/material';
+import { TextField, Button, Select, MenuItem } from '@mui/material';
 import { ArrowForwardIos } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 type Props = {};
@@ -220,9 +205,7 @@ const Register = (props: Props) => {
     register,
     handleSubmit,
     control,
-    watch,
-    setValue,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<IFormData>({
     resolver: yupResolver(schema)
   });

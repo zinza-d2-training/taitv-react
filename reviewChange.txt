@@ -1,2 +1,2 @@
--add "react-datepicker" in dependencies,  "@types/react-datepicker" in devDependencies
--Implement pages/Register
+-add "chart.js, react-chartjs-2, faker" in dependencies
+-Implement Homepage
