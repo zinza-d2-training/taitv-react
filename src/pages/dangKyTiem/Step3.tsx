@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Heading, Steps } from './components/Index';
 
@@ -6,6 +6,13 @@ import { ArrowBack } from '@mui/icons-material/';
 
 import { useNavigate } from 'react-router-dom';
 
+import { useAppSelector } from '../../redux';
+import {
+  updateRegistrationVaccine,
+  registrationVaccineSelector
+} from '../../features/user';
+
+import randomstring from 'randomstring';
 type Props = {};
 const Container = styled.div`
   margin-top: 64px;
@@ -125,6 +132,7 @@ const InforItem = styled.div`
   }
 `;
 const Step3 = (props: Props) => {
+  const [idNeedel, setIdNeedel] = useState<number>(0);
   const currentStep = useMemo(() => 3, []);
   const [completed, setCompleted] = useState([1, 2]);
   const navigate = useNavigate();
@@ -132,6 +140,17 @@ const Step3 = (props: Props) => {
   const handleCancle = () => {
     navigate('/trang-chu');
   };
+  useEffect(() => {
+    setIdNeedel(
+      randomstring.generate({
+        length: 12,
+        charset: 'numeric'
+      })
+    );
+  }, []);
+
+  const registrationInfo = useAppSelector(registrationVaccineSelector);
+
   return (
     <>
       <Heading title="Hoàn thành" />
@@ -139,7 +158,7 @@ const Step3 = (props: Props) => {
       <Container>
         <Title>
           Đăng ký tiêm chủng COVID-19 thành công. Mã đặt tiêm của bạn là{' '}
-          <span>0120211103501237</span>.
+          <span>{idNeedel}</span>.
         </Title>
         <TitleSecond>
           Cảm ơn quý khách đã đăng ký tiêm chủng vắc xin COVID-19. Hiện tại Bộ y
@@ -178,11 +197,11 @@ const Step3 = (props: Props) => {
         <InforContainer>
           <InforItem>
             <label>Số CMND/CCCD/Mã định danh công dân</label>
-            <b>030012345678</b>
+            <b>024241423</b>
           </InforItem>
           <InforItem>
             <label>Số thẻ BHYT</label>
-            <b></b>
+            <b>{registrationInfo?.healthyCardNumber}</b>
           </InforItem>
           <InforItem>
             <label></label>

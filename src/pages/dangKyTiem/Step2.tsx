@@ -15,6 +15,14 @@ import {
   SvgStep2Plus,
   SvgStep2Protection
 } from '../../access/index';
+
+import { IFRegistrationVaccine } from '../../interfaces/steps';
+
+import { useAppDispatch, useAppSelector } from '../../redux';
+import {
+  toggleIsAccept,
+  registrationVaccineSelector
+} from '../../features/user';
 type Props = {};
 const Container = styled.div`
   margin-top: 64px;
@@ -137,30 +145,35 @@ const Button = styled.button`
     }
   }
 `;
-interface IFormData {
-  isAccept: boolean;
-}
 const schema = yup
   .object({
     isAccept: yup.bool().required('Vui lòng chấp nhận điều khoản')
   })
   .required();
 const Step2 = (props: Props) => {
+  let isAccept = useAppSelector(registrationVaccineSelector).isAccept;
   const currentStep = useMemo(() => 2, []);
   const [completed, setCompleted] = useState([1]);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState } = useForm<IFormData>({
-    resolver: yupResolver(schema)
+  const { register, handleSubmit } = useForm<Partial<IFRegistrationVaccine>>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      isAccept
+    }
   });
-  const onSubmit = (data: IFormData) => {
-    if (!data.isAccept) {
-      alert('Vui lòng chấp nhận điều khoản.');
-    } else {
+  const dispatch = useAppDispatch();
+  const onSubmit = (data: Partial<IFRegistrationVaccine>) => {
+    if (isAccept) {
       navigate('../step3');
+    } else {
+      alert('Vui lòng chọn đồng ý');
     }
   };
   const handleCancle = () => {
     navigate('../step1');
+  };
+  const handleChange = () => {
+    dispatch(toggleIsAccept());
   };
   return (
     <>
@@ -201,7 +214,11 @@ const Step2 = (props: Props) => {
             </p>
             <div>
               <span>
-                <input type="checkbox" {...register('isAccept')} />
+                <input
+                  type="checkbox"
+                  {...register('isAccept')}
+                  onChange={handleChange}
+                />
               </span>
               <label>Đồng ý tiêm chủng</label>
             </div>

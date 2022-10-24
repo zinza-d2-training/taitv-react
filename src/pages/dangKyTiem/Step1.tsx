@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { Heading, Steps } from './components/Index';
 
-import { Select, MenuItem } from '@mui/material';
+import { Select, MenuItem, TextField } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,6 +12,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ArrowBack } from '@mui/icons-material/';
 
 import { useNavigate } from 'react-router-dom';
+import { IFRegistrationVaccine } from '../../interfaces/steps';
+import { priorities, expectDateTimes } from '../../fake/steps';
+
+import { useAppDispatch, useAppSelector } from '../../redux';
+import {
+  updateRegistrationVaccine,
+  registrationVaccineSelector
+} from '../../features/user';
 type Props = {};
 const Container = styled.div`
   margin-top: 64px;
@@ -72,9 +80,17 @@ const InputComponent = styled.div`
       color: #d32f2f;
     }
   }
-  & .MuiSelect-select,
-  & .input-expectday {
-    width: 322px;
+  /* & .MuiInputBase-input {
+    width: 320px;
+    height: 40px;
+  } */
+  & .MuiInputBase-root {
+    width: 320px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  & .MuiInputBase-input,
+  & .MuiSelect-select {
     padding: 0px !important;
     height: 40px !important;
     font-weight: 400;
@@ -83,12 +99,22 @@ const InputComponent = styled.div`
     color: rgba(0, 0, 0, 0.87);
     display: flex;
     align-items: center;
-    padding-left: 8px !important;
   }
-  & .MuiOutlinedInput-notchedOutline,
   & .input-expectday {
     border-radius: 4px;
-    width: 328px;
+    padding: 0px;
+    border: 1px solid #c4c4c4;
+    width: 320px;
+    padding-left: 8px;
+    padding-right: 8px;
+    height: 40px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 23px;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  & .MuiOutlinedInput-notchedOutline {
+    border-radius: 4px;
     padding: 0px;
     border: 1px solid #c4c4c4;
   }
@@ -138,53 +164,18 @@ const Button = styled.button`
     }
   }
 `;
-const priorities = [
-  { name: 'nhom uu tien 1', priorityId: 1 },
-  { name: 'nhom uu tien 2', priorityId: 2 },
-  { name: 'nhom uu tien 3', priorityId: 3 }
-];
-const healthyCardNumbers = [
-  { name: 'nhom uu tien 1', healthyCardId: 1 },
-  { name: 'nhom uu tien 2', healthyCardId: 2 },
-  { name: 'nhom uu tien 3', healthyCardId: 3 }
-];
-const jobs = [
-  { name: 'nhom uu tien 1', jobId: 1 },
-  { name: 'nhom uu tien 2', jobId: 2 },
-  { name: 'nhom uu tien 3', jobId: 3 }
-];
-const workingUnits = [
-  { name: 'nhom uu tien 1', workingUnitId: 1 },
-  { name: 'nhom uu tien 2', workingUnitId: 2 },
-  { name: 'nhom uu tien 3', workingUnitId: 3 }
-];
-const currentAddresses = [
-  { name: 'nhom uu tien 1', currentAddressId: 1 },
-  { name: 'nhom uu tien 2', currentAddressId: 2 },
-  { name: 'nhom uu tien 3', currentAddressId: 3 }
-];
-const expectDateTimes = [
-  { name: 'sáng', expectDateTimeId: 1 },
-  { name: 'trưa', expectDateTimeId: 2 },
-  { name: 'chiều', expectDateTimeId: 3 }
-];
-interface IFormData {
-  priorityId: number;
-  healthyCardId: number;
-  jobId: number;
-  workingUnitId: number;
-  currentAddressId: number;
-  expectDay: Date;
-  expectDateTimeId: number;
-}
+
 const schema = yup
   .object({
     priorityId: yup.number().required('Nhóm ưu tiên không được bỏ trống'),
-    healthyCardId: yup.number().required('Số thẻ BHYT không được bỏ trống'),
-    jobId: yup.number().required('Nghề nghiệp không được bỏ trống'),
-    workingUnitId: yup.number().required('Đơn vị công tác không được bỏ trống'),
-    currentAddressId: yup
-      .number()
+    healthyCardNumber: yup
+      .string()
+      .required('Số thẻ BHYT không được bỏ trống')
+      .matches(/^[0-9]+$/, 'Số thẻ BHYT là số'),
+    job: yup.string().required('Nghề nghiệp không được bỏ trống'),
+    workingUnit: yup.string().required('Đơn vị công tác không được bỏ trống'),
+    currentAddress: yup
+      .string()
       .required('Địa chỉ hiện tại không được bỏ trống'),
     expectDay: yup.date().required('Ngày mong muấn không được bỏ trống'),
     expectDateTimeId: yup
@@ -193,18 +184,22 @@ const schema = yup
   })
   .required();
 const Step1 = (props: Props) => {
-  const currentStep = useMemo(() => 2, []);
-  const [completed, setCompleted] = useState([1]);
+  const registrationVaccineInfo = useAppSelector(registrationVaccineSelector);
+  const currentStep = useMemo(() => 1, []);
+  const [completed, setCompleted] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     control,
     formState: { errors }
-  } = useForm<IFormData>({
-    resolver: yupResolver(schema)
+  } = useForm<Partial<IFRegistrationVaccine>>({
+    resolver: yupResolver(schema),
+    defaultValues: registrationVaccineInfo
   });
-  const onSubmit = (data: IFormData) => {
+  const onSubmit = (data: Partial<IFRegistrationVaccine>) => {
+    dispatch(updateRegistrationVaccine(data));
     navigate('../step2');
   };
   const handleCancle = () => {
@@ -236,7 +231,7 @@ const Step1 = (props: Props) => {
                       <MenuItem
                         key={priority.priorityId}
                         value={priority.priorityId}>
-                        {priority.name}
+                        {`${priority.priorityId}. ${priority.name}`}
                       </MenuItem>
                     ))}
                   </Select>
@@ -246,110 +241,56 @@ const Step1 = (props: Props) => {
                 {errors?.priorityId ? errors.priorityId.message : ''}
               </p>
             </InputComponent>
-            <InputComponent fullWidth>
-              <label htmlFor="healthyCardId">Số thẻ BHYT</label>
-              <Controller
-                {...register('healthyCardId')}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    id="healthyCardId"
-                    {...field}
-                    onChange={(event) => {
-                      field.onChange(Number(event.target.value));
-                    }}>
-                    {healthyCardNumbers.map((healthyCardNumber) => (
-                      <MenuItem
-                        key={healthyCardNumber.healthyCardId}
-                        value={healthyCardNumber.healthyCardId}>
-                        {healthyCardNumber.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
+            <InputComponent>
+              <label htmlFor="healthyCardNumber">Số thẻ BHYT</label>
+              <TextField
+                {...register('healthyCardNumber')}
+                id="healthyCardNumber"
+                label=""
+                type="text"
               />
               <p className="input-helper">
-                {errors?.healthyCardId ? errors.healthyCardId.message : ''}
+                {errors?.healthyCardNumber
+                  ? errors.healthyCardNumber.message
+                  : ''}
               </p>
             </InputComponent>
           </Row>
           <Row>
             <InputComponent>
-              <label htmlFor="jobId">Nghề nghiệp</label>
-              <Controller
-                {...register('jobId')}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    id="jobId"
-                    {...field}
-                    onChange={(event) =>
-                      field.onChange(Number(event.target.value))
-                    }>
-                    {jobs.map((job) => (
-                      <MenuItem key={job.jobId} value={job.jobId}>
-                        {job.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
+              <label htmlFor="jobName">Nghề nghiệp</label>
+              <TextField
+                {...register('job')}
+                id="jobName"
+                label=""
+                type="text"
               />
               <p className="input-helper">
-                {errors?.jobId ? errors.jobId.message : ''}
+                {errors?.job ? errors.job.message : ''}
               </p>
             </InputComponent>
             <InputComponent>
-              <label htmlFor="workingUnitId">Đơn vị công tác</label>
-              <Controller
-                {...register('workingUnitId')}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    id="workingUnitId"
-                    {...field}
-                    onChange={(event) =>
-                      field.onChange(Number(event.target.value))
-                    }>
-                    {workingUnits.map((workingUnit) => (
-                      <MenuItem
-                        key={workingUnit.workingUnitId}
-                        value={workingUnit.workingUnitId}>
-                        {workingUnit.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
+              <label htmlFor="workingUnit">Đơn vị công tác</label>
+              <TextField
+                {...register('workingUnit')}
+                id="workingUnit"
+                label=""
+                type="text"
               />
               <p className="input-helper">
-                {errors?.workingUnitId ? errors.workingUnitId.message : ''}
+                {errors?.workingUnit ? errors.workingUnit.message : ''}
               </p>
             </InputComponent>
             <InputComponent>
-              <label htmlFor="currentAddressId">Địa chỉ hiện tại</label>
-              <Controller
-                {...register('currentAddressId')}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    id="currentAddressId"
-                    {...field}
-                    onChange={(event) =>
-                      field.onChange(Number(event.target.value))
-                    }>
-                    {currentAddresses.map((currentAddress) => (
-                      <MenuItem
-                        key={currentAddress.currentAddressId}
-                        value={currentAddress.currentAddressId}>
-                        {currentAddress.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
+              <label htmlFor="currentAddress">Địa chỉ hiện tại</label>
+              <TextField
+                id="currentAddress"
+                {...register('currentAddress')}
+                label=""
+                type="text"
               />
               <p className="input-helper">
-                {errors?.currentAddressId
-                  ? errors.currentAddressId.message
-                  : ''}
+                {errors?.currentAddress ? errors.currentAddress.message : ''}
               </p>
             </InputComponent>
           </Row>
