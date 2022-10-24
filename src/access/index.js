@@ -4,7 +4,10 @@ import ImgLogoFooterLeft from './images/logo_footer_left.png';
 import ImgLogoFooterRight from './images/logo_footer_right.png';
 import SvgTestimonialNeedle from './images/testimonial_needle.svg';
 import SvgTestimonialChecked from './images/testimonial_checked.svg';
-import AvgSearchIcon from './images/search_icon.svg';
+import SvgSearchIcon from './images/search_icon.svg';
+import SvgStep2Needel from './images/step2_needel.svg';
+import SvgStep2Plus from './images/step2_plus.svg';
+import SvgStep2Protection from './images/step2_protection.svg';
 export {
   ImgSideForm,
   ImgLogoHeader,
@@ -12,5 +15,8 @@ export {
   ImgLogoFooterRight,
   SvgTestimonialNeedle,
   SvgTestimonialChecked,
-  AvgSearchIcon
+  SvgSearchIcon,
+  SvgStep2Needel,
+  SvgStep2Plus,
+  SvgStep2Protection
 };

@@ -1,2 +1,0 @@
--add "chart.js, react-chartjs-2, faker" in dependencies
--Implement Homepage

@@ -217,7 +217,7 @@ const Header = (props: Props) => {
             <Link to="/">Trang chủ</Link>
           </MenuItem>
           <MenuItem width={93}>
-            <Link to="/">Đăng ký tiêm </Link>
+            <Link to="/dang-ky-tiem/step1">Đăng ký tiêm </Link>
           </MenuItem>
           <MenuItem width={78}>
             Tra cứu
