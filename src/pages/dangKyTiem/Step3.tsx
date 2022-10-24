@@ -142,10 +142,12 @@ const Step3 = (props: Props) => {
   };
   useEffect(() => {
     setIdNeedel(
-      randomstring.generate({
-        length: 12,
-        charset: 'numeric'
-      })
+      Number(
+        randomstring.generate({
+          length: 12,
+          charset: 'numeric'
+        })
+      )
     );
   }, []);
 
