@@ -7,6 +7,9 @@ import { TextField, Button, Select, MenuItem } from '@mui/material';
 import { ArrowForwardIos } from '@mui/icons-material';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
+import { IFUserInfo } from '../../interfaces/user';
+import { provinces, districts, wards } from '../../fake/userInfo';
 type Props = {};
 
 const Wrapper = styled.div((props: { columns?: number }) => ({
@@ -143,39 +146,7 @@ const DialogActions = styled.div`
     }
   }
 `;
-// interface ICountry {
-//   code: number;
-//   label: string;
-//   phone: string;
-// }
-const provinces = [
-  { name: 'mot', provinceId: 1 },
-  { name: 'hai', provinceId: 2 },
-  { name: 'ba', provinceId: 3 }
-];
-const dictricts = [
-  { name: 'mot', dictrictId: 1 },
-  { name: 'hai', dictrictId: 2 },
-  { name: 'ba', dictrictId: 3 }
-];
-const wards = [
-  { name: 'mot', wardId: 1 },
-  { name: 'hai', wardId: 2 },
-  { name: 'ba', wardId: 3 }
-];
-interface IFormData {
-  identityCardNumber: string;
-  email: string;
-  password: string;
-  name: string;
-  birthday: Date;
-  provinceId: number;
-  gender: number;
-  districtId: number;
-  wardId: number;
-}
 
-// identityCardNumber,email,password,name,birthday
 const schema = yup
   .object({
     identityCardNumber: yup
@@ -197,7 +168,7 @@ const schema = yup
     provinceId: yup.number().required('Tỉnh/thành phố là bắt buộc'),
     gender: yup.number().required('Giới tính là bắt buộc'),
     districtId: yup.number().required('Quận/huyện là bắt buộc'),
-    wardId: yup.string().required('Xã/phường là bắt buộc')
+    wardId: yup.number().required('Xã/phường là bắt buộc')
   })
   .required();
 const Register = (props: Props) => {
@@ -206,10 +177,10 @@ const Register = (props: Props) => {
     handleSubmit,
     control,
     formState: { errors }
-  } = useForm<IFormData>({
+  } = useForm<IFUserInfo>({
     resolver: yupResolver(schema)
   });
-  const onSubmit = (data: IFormData) => {
+  const onSubmit = (data: IFUserInfo) => {
     console.log(data);
   };
 
@@ -399,9 +370,9 @@ const Register = (props: Props) => {
                         onChange={(event) => {
                           field.onChange(Number(event.target.value));
                         }}>
-                        {dictricts.map((dictrict, index) => (
-                          <MenuItem key={index} value={dictrict.dictrictId}>
-                            {dictrict.name}
+                        {districts.map((district, index) => (
+                          <MenuItem key={index} value={district.districtId}>
+                            {district.name}
                           </MenuItem>
                         ))}
                       </Select>

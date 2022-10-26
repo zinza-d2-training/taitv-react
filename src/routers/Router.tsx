@@ -8,6 +8,12 @@ import {
 } from '../pages/Index';
 import { Template } from '../components/common';
 import { DangKyTiem, Step1, Step2, Step3 } from '../pages/dangKyTiem/Index';
+import {
+  Account,
+  RegistrationResult,
+  VaccinationCertificate,
+  User
+} from '../pages/user';
 export default function Router() {
   return (
     <Routes>
@@ -40,6 +46,20 @@ export default function Router() {
         <Route path="step1" element={<Step1 />} />
         <Route path="step2" element={<Step2 />} />
         <Route path="step3" element={<Step3 />} />
+      </Route>
+      <Route
+        path="user"
+        element={
+          <Template>
+            <User />
+          </Template>
+        }>
+        <Route
+          path="vaccination-certificate"
+          element={<VaccinationCertificate />}
+        />
+        <Route path="registration-result" element={<RegistrationResult />} />
+        <Route path="account" element={<Account />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

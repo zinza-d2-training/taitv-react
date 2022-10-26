@@ -16,7 +16,7 @@ import {
   SvgStep2Protection
 } from '../../access/index';
 
-import { IFRegistrationVaccine } from '../../interfaces/steps';
+import { IFRegistrationVaccine } from '../../interfaces/user';
 
 import { useAppDispatch, useAppSelector } from '../../redux';
 import {

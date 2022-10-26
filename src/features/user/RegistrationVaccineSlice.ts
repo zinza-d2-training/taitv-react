@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { IFRegistrationVaccine } from '../../interfaces/steps';
+import { IFRegistrationVaccine } from '../../interfaces/user';
 import { RootStateType } from '../../redux';
 const initialState: Partial<IFRegistrationVaccine> = {
   priorityId: undefined,
