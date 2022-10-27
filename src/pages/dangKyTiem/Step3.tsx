@@ -7,10 +7,7 @@ import { ArrowBack } from '@mui/icons-material/';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppSelector } from '../../redux';
-import {
-  updateRegistrationVaccine,
-  registrationVaccineSelector
-} from '../../features/user';
+import { registrationVaccineSelector } from '../../features/user';
 
 import randomstring from 'randomstring';
 type Props = {};

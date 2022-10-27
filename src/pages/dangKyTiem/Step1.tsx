@@ -12,7 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ArrowBack } from '@mui/icons-material/';
 
 import { useNavigate } from 'react-router-dom';
-import { IFRegistrationVaccine } from '../../interfaces/steps';
+import { IFRegistrationVaccine } from '../../interfaces/user';
 import { priorities, expectDateTimes } from '../../fake/steps';
 
 import { useAppDispatch, useAppSelector } from '../../redux';

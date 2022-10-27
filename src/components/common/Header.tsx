@@ -83,6 +83,9 @@ const MenuItem = styled.div`
     word-spacing: -1px;
     width: ${(props: { width?: number }) =>
       props.width ? `${props.width}px` : `100%`};
+    &.logged {
+      font-weight: 700;
+    }
   }
   & > svg {
     width: 24px;
@@ -265,9 +268,12 @@ const Header = (props: Props) => {
             <Link to="/">Tài liệu</Link>
           </MenuItem>
           <MenuItem width={135}>
-            <button>
+            {/* <button>
               <Link to="/Login">Đăng nhập</Link>
-            </button>
+            </button> */}
+            <Link to="/user/account" className="logged">
+              Nguyễn Văn A
+            </Link>
           </MenuItem>
         </Menu>
       </Container>

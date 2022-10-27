@@ -8,6 +8,8 @@ import SvgSearchIcon from './images/search_icon.svg';
 import SvgStep2Needel from './images/step2_needel.svg';
 import SvgStep2Plus from './images/step2_plus.svg';
 import SvgStep2Protection from './images/step2_protection.svg';
+import ImgLogoCardVaccineCertificate from './images/logo_card_vaccine_certificate.png';
+import ImgQRCardVaccineCertificate from './images/qr_card_vaccine_certificate.png';
 export {
   ImgSideForm,
   ImgLogoHeader,
@@ -18,5 +20,7 @@ export {
   SvgSearchIcon,
   SvgStep2Needel,
   SvgStep2Plus,
-  SvgStep2Protection
+  SvgStep2Protection,
+  ImgLogoCardVaccineCertificate,
+  ImgQRCardVaccineCertificate
 };
