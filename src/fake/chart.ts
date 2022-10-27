@@ -36,7 +36,7 @@ let datas = labels.reduce((prev, current) => {
   while (newItem <= 400000) {
     newItem = Math.floor(Math.random() * 2200000);
   }
-  prev.push(newItem);
+  prev.push(newItem as never);
   return prev;
 }, []);
 export { labels, datas };
