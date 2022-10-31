@@ -9,6 +9,7 @@ import * as yup from 'yup';
 
 import { SvgSearchIcon } from '../../../access/index';
 
+import { fakeNeedlePlace } from '../../../fake/needlePlace';
 type Props = {};
 const Container = styled.div`
   padding: 0px 12px;
@@ -254,76 +255,15 @@ const Location = (props: Props) => {
             <th>Người đứng đầu cơ sở tiêm chủng</th>
             <th>Số bàn tiêm</th>
           </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Bệnh viện Đa khoa Medlatec</td>
-            <td>42-44 Nghĩa Dũng</td>
-            <td>Nguyễn Thị Kim Liên</td>
-            <td>1</td>
-          </tr>
+          {fakeNeedlePlace.map((placeItem) => (
+            <tr key={placeItem.id}>
+              <td>{placeItem.id}</td>
+              <td>{placeItem.needlePlace}</td>
+              <td>{placeItem.address}</td>
+              <td>{placeItem.host}</td>
+              <td>{placeItem.tableNumber}</td>
+            </tr>
+          ))}
         </Table>
         <PaginationComponent>
           <Pagination count={10} page={page} onChange={handleChangePage} />

@@ -7,13 +7,24 @@ import {
   Home
 } from '../pages/Index';
 import { Template } from '../components/common';
-import { DangKyTiem, Step1, Step2, Step3 } from '../pages/dangKyTiem/Index';
 import {
-  Account,
-  RegistrationResult,
-  VaccinationCertificate,
+  DangKyTiem,
+  Step1 as DangKyTiemStep1,
+  Step2 as DangKyTiemStep2,
+  Step3 as DangKyTiemStep3
+} from '../pages/dangKyTiem/Index';
+import {
+  Account as UserAccount,
+  RegistrationResult as UserRegistrationResult,
+  VaccinationCertificate as UserVaccinationCertificate,
   User
 } from '../pages/user';
+import {
+  Admin,
+  Place as AdminPlace,
+  Register as AdminRegister,
+  Document as AdminDocument
+} from '../pages/admin';
 export default function Router() {
   return (
     <Routes>
@@ -43,9 +54,9 @@ export default function Router() {
             <DangKyTiem />
           </Template>
         }>
-        <Route path="step1" element={<Step1 />} />
-        <Route path="step2" element={<Step2 />} />
-        <Route path="step3" element={<Step3 />} />
+        <Route path="step1" element={<DangKyTiemStep1 />} />
+        <Route path="step2" element={<DangKyTiemStep2 />} />
+        <Route path="step3" element={<DangKyTiemStep3 />} />
       </Route>
       <Route
         path="user"
@@ -54,12 +65,28 @@ export default function Router() {
             <User />
           </Template>
         }>
+        <Route index element={<UserAccount />} />
         <Route
           path="vaccination-certificate"
-          element={<VaccinationCertificate />}
+          element={<UserVaccinationCertificate />}
         />
-        <Route path="registration-result" element={<RegistrationResult />} />
-        <Route path="account" element={<Account />} />
+        <Route
+          path="registration-result"
+          element={<UserRegistrationResult />}
+        />
+        <Route path="account" element={<UserAccount />} />
+      </Route>
+      <Route
+        path="admin"
+        element={
+          <Template>
+            <Admin />
+          </Template>
+        }>
+        <Route index element={<AdminPlace />}></Route>
+        <Route path="place" element={<AdminPlace />}></Route>
+        <Route path="register" element={<AdminRegister />}></Route>
+        <Route path="document" element={<AdminDocument />}></Route>
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
